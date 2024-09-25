@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pothole Detection</title>
+</head>
+<body>
+    <h1>Upload Image for Pothole Detection</h1>
+    <input type="file" id="fileInput" required />
+    <button onclick="uploadImage()">Detect Potholes</button>
+    <div id="result"></div>
+
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch('/api/detect/', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('result').innerHTML = `<h2>Detected Image:</h2><img src="${data.detected_image}" alt="Detected Potholes" />`;
+            } else {
+                const errorData = await response.json();
+                document.getElementById('result').innerHTML = `<h2>Error:</h2><pre>${JSON.stringify(errorData)}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
